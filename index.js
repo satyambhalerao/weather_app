@@ -17,20 +17,35 @@ app.post("/getWeather",(req, res)=>{
 
 // Define a function to fetch weather data for a location
 async function fetchWeatherData(loc) {
-    const response = await axios.get(`http://api.weatherapi.com/v1/current.json?key=${APIkey}&q=${loc}`);
-    const result = response.data;
-    return result;
+    try{
+        const response = await axios.get(`http://api.weatherapi.com/v1/current.json?key=${APIkey}&q=${loc}`);
+        const result = response.data;
+        return result;
+    }
+    catch (err)
+    {
+            return(err.message)
+        
+    }
+
 }
 
 // Loop through locations and fetch weather data
 Promise.all(locations.map(async (loc) => {
     const result = await fetchWeatherData(loc);
-    console.log(result.location.name + " " + result.current.temp_c + "\u2103");
+    // console.log(result.location.name + " " + result.current.temp_c + "\u2103");
     
     // Add data to finalresult JSON
-    finalresult.weather[result.location.name] = {
-        temperature: result.current.temp_c + "\u2103"
-    };
+    try{
+        finalresult.weather[result.location.name] = {
+            temperature: result.current.temp_c + "\u2103"
+        };
+    }
+    catch(err)
+    {
+        finalresult.weather["Error"]={result};
+    }
+
 }))
 .then(() => {
     res.json(finalresult)
