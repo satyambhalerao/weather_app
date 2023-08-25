@@ -33,7 +33,7 @@ Promise.all(locations.map(async (loc) => {
     };
 }))
 .then(() => {
-    res.json(final)
+    res.json(finalresult)
 })
 .catch(error => {
     console.error("An error occurred:", error);
